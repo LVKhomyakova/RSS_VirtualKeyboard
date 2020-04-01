@@ -97,111 +97,229 @@
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _js_Key__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./js/Key */ "./src/js/Key.js");
 /* harmony import */ var _js_Data__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./js/Data */ "./src/js/Data.js");
-function _createForOfIteratorHelper(o) { if (typeof Symbol === "undefined" || o[Symbol.iterator] == null) { if (Array.isArray(o) || (o = _unsupportedIterableToArray(o))) { var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var it, normalCompletion = true, didErr = false, err; return { s: function s() { it = o[Symbol.iterator](); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
-
-function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(n); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
-
-function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
-
 
 
 var capslockPressed = false;
 
-window.onload = function () {
-  var wrapper = renderWrapper();
-  renderTextarea(wrapper);
-
-  if (_js_Data__WEBPACK_IMPORTED_MODULE_1__["data"]) {
-    wrapper.append(renderKeyBoard());
-  } //add listeners
-
-
-  document.addEventListener('keydown', buttonKeyDown);
-  document.addEventListener('keyup', buttonKeyUp);
-  addListeners();
+var unpressShift = function unpressShift() {
+  document.querySelectorAll('.symbol_unshift').forEach(function (symbol) {
+    symbol.classList.remove('hide');
+  });
+  document.querySelectorAll('.symbol_shift').forEach(function (symbol) {
+    symbol.classList.add('hide');
+  });
 };
+
+var pressShift = function pressShift() {
+  document.querySelectorAll('.symbol_unshift').forEach(function (symbol) {
+    symbol.classList.add('hide');
+  });
+  document.querySelectorAll('.symbol_shift').forEach(function (symbol) {
+    symbol.classList.remove('hide');
+  });
+}; // mouse events..
+
+
+var mouseKeyDown = function mouseKeyDown(e) {
+  e.preventDefault();
+  var target = e.currentTarget;
+  var key = '';
+  target.childNodes.forEach(function (ch) {
+    if (!ch.classList.contains('hide')) {
+      key = ch.textContent;
+    }
+  });
+  if (target.getAttribute('data-code') !== 'CapsLock') target.classList.add('pressed');
+  var textarea = document.querySelector('#textarea');
+
+  if (!target.classList.contains('button_special')) {
+    textarea.value += key;
+  } else {
+    switch (key) {
+      case 'Backspace':
+        {
+          var pozition = textarea.selectionStart;
+          var text = textarea.value;
+          var arr = text.split('');
+          arr.splice(pozition - 1, 1);
+          textarea.value = arr.join('');
+          pozition -= 1;
+          textarea.selectionStart = pozition;
+          textarea.selectionEnd = pozition;
+          break;
+        }
+
+      case 'Tab':
+        textarea.value += '\t';
+        break;
+
+      case 'Delete':
+        {
+          var _pozition = textarea.selectionStart;
+          var _text = textarea.value;
+
+          var _arr = _text.split('');
+
+          _arr.splice(_pozition, 1);
+
+          textarea.value = _arr.join('');
+          textarea.selectionStart = _pozition;
+          textarea.selectionEnd = _pozition;
+          break;
+        }
+
+      case 'Enter':
+        textarea.value += '\n';
+        break;
+
+      case 'Shift':
+        if (!capslockPressed) pressShift();else unpressShift();
+        break;
+
+      case 'Alt':
+        break;
+
+      default:
+        break;
+    }
+  }
+};
+
+var mouseKeyUp = function mouseKeyUp(e) {
+  e.preventDefault();
+  var target = e.currentTarget;
+  var key = '';
+  target.childNodes.forEach(function (ch) {
+    if (!ch.classList.contains('hide')) {
+      key = ch.textContent;
+    }
+  });
+  if (target.getAttribute('data-code') !== 'CapsLock') target.classList.remove('pressed');
+
+  if (target.classList.contains('button_special')) {
+    switch (key) {
+      case 'Shift':
+        if (capslockPressed) pressShift();else unpressShift();
+        break;
+
+      case 'CapsLock':
+        if (!capslockPressed) {
+          pressShift();
+          capslockPressed = true;
+        } else {
+          unpressShift();
+          capslockPressed = false;
+        }
+
+        document.querySelector('.button_capslock').classList.toggle('pressed');
+        break;
+
+      default:
+        break;
+    }
+  }
+}; // render wrapper
+
 
 var renderWrapper = function renderWrapper() {
   var wrapper = document.createElement('div');
   wrapper.className = 'wrapper';
   document.body.append(wrapper);
   return wrapper;
-}; //textarea rendering
+}; // textarea rendering
 
 
 var renderTextarea = function renderTextarea(wrapper) {
   var textarea = document.createElement('textarea');
   textarea.id = 'textarea';
   wrapper.append(textarea);
-}; //Keyboard rendering
+}; // Keyboard rendering
 
 
-var renderKeyBoard = function renderKeyBoard() {
-  var keyboard = document.createElement('section');
-  keyboard.className = 'keyboard';
-  var rows = renderRows(_js_Data__WEBPACK_IMPORTED_MODULE_1__["data"]);
-  rows.forEach(function (row) {
-    keyboard.append(row);
-  });
-  return keyboard;
-};
+var renderRows = function renderRows(dataKeyboard) {
+  if (!localStorage.getItem('language')) {
+    localStorage.setItem('language', 'eng');
+  }
 
-var renderRows = function renderRows(data) {
-  var dataKeys = data[localStorage.getItem('language')];
+  var dataKeys = dataKeyboard[localStorage.getItem('language')];
   var rows = [];
   dataKeys.forEach(function (dataRow) {
     var row = document.createElement('section');
     row.className = 'row';
     dataRow.forEach(function (dataKey) {
-      var key = new _js_Key__WEBPACK_IMPORTED_MODULE_0__["Key"](dataKey);
+      var key = new _js_Key__WEBPACK_IMPORTED_MODULE_0__["default"](dataKey);
       var button = key.generateKey();
       row.append(button);
     });
     rows.push(row);
   });
   return rows;
-}; //keuboard events..
-
-
-var buttonKeyDown = function buttonKeyDown(e) {
-  var target = document.querySelector(".button[data-code = ".concat(e.code, "]"));
-  var key = '';
-  console.log(target);
-
-  var _iterator = _createForOfIteratorHelper(target.childNodes),
-      _step;
-
-  try {
-    for (_iterator.s(); !(_step = _iterator.n()).done;) {
-      var ch = _step.value;
-
-      if (!ch.classList.contains('hide')) {
-        key = ch.textContent;
-      }
-    }
-  } catch (err) {
-    _iterator.e(err);
-  } finally {
-    _iterator.f();
-  }
-
-  if (e.code !== 'CapsLock') target.classList.add('pressed');
-  var textarea = document.querySelector('#textarea');
-
-  if (!target.classList.contains('button_special')) {
-    textarea.value += key;
-  } else {
-    doSpecialKey(e);
-  }
 };
+
+var renderKeyBoard = function renderKeyBoard() {
+  var keyboard = document.createElement('section');
+  keyboard.className = 'keyboard';
+  var rows = renderRows(_js_Data__WEBPACK_IMPORTED_MODULE_1__["default"]);
+  rows.forEach(function (row) {
+    keyboard.append(row);
+  });
+  return keyboard;
+}; // change Language
+
+
+var changeLanguage = function changeLanguage(e) {
+  e.preventDefault();
+
+  if (localStorage.getItem('language') === 'eng') {
+    localStorage.setItem('language', 'ru');
+  } else {
+    localStorage.setItem('language', 'eng');
+  }
+
+  document.querySelector('.keyboard').remove();
+  var wrapper = document.querySelector('.wrapper');
+
+  if (_js_Data__WEBPACK_IMPORTED_MODULE_1__["default"]) {
+    wrapper.append(renderKeyBoard());
+  }
+
+  document.querySelectorAll('.button').forEach(function (btn) {
+    return btn.addEventListener('mousedown', mouseKeyDown);
+  });
+  document.querySelectorAll('.button').forEach(function (btn) {
+    return btn.addEventListener('mouseup', mouseKeyUp);
+  });
+  document.querySelector('.button_language').addEventListener('click', changeLanguage);
+};
+
+var addListeners = function addListeners() {
+  document.querySelectorAll('.button').forEach(function (btn) {
+    return btn.addEventListener('mousedown', mouseKeyDown);
+  });
+  document.querySelectorAll('.button').forEach(function (btn) {
+    return btn.addEventListener('mouseup', mouseKeyUp);
+  });
+  document.querySelector('.button_language').addEventListener('click', changeLanguage);
+}; // keuboard events..
+
 
 var doSpecialKey = function doSpecialKey(e) {
   var textarea = document.querySelector('#textarea');
 
   switch (e.key) {
     case 'Backspace':
-      textarea.value = textarea.value.slice(0, -1);
-      break;
+      {
+        e.preventDefault();
+        var pozition = textarea.selectionStart;
+        var text = textarea.value;
+        var arr = text.split('');
+        arr.splice(pozition - 1, 1);
+        textarea.value = arr.join('');
+        pozition -= 1;
+        textarea.selectionStart = pozition;
+        textarea.selectionEnd = pozition;
+        break;
+      }
 
     case 'Tab':
       e.preventDefault();
@@ -222,6 +340,25 @@ var doSpecialKey = function doSpecialKey(e) {
 
     default:
       break;
+  }
+};
+
+var buttonKeyDown = function buttonKeyDown(e) {
+  var target = document.querySelector(".button[data-code = ".concat(e.code, "]"));
+  var key = '';
+  target.childNodes.forEach(function (ch) {
+    if (!ch.classList.contains('hide')) {
+      key = ch.textContent;
+    }
+  });
+  if (e.code !== 'CapsLock') target.classList.add('pressed');
+  var textarea = document.querySelector('#textarea');
+  textarea.blur();
+
+  if (!target.classList.contains('button_special')) {
+    textarea.value += key;
+  } else {
+    doSpecialKey(e);
   }
 };
 
@@ -253,173 +390,18 @@ var buttonKeyUp = function buttonKeyUp(e) {
   }
 };
 
-var unpressShift = function unpressShift() {
-  document.querySelectorAll('.symbol_unshift').forEach(function (symbol) {
-    symbol.classList.remove('hide');
-  });
-  document.querySelectorAll('.symbol_shift').forEach(function (symbol) {
-    symbol.classList.add('hide');
-  });
-};
+window.onload = function () {
+  var wrapper = renderWrapper();
+  renderTextarea(wrapper);
 
-var pressShift = function pressShift() {
-  document.querySelectorAll('.symbol_unshift').forEach(function (symbol) {
-    symbol.classList.add('hide');
-  });
-  document.querySelectorAll('.symbol_shift').forEach(function (symbol) {
-    symbol.classList.remove('hide');
-  });
-}; //mouse events..
-
-
-var mouseKeyDown = function mouseKeyDown(e) {
-  e.preventDefault();
-  var target = e.currentTarget;
-  var key = '';
-
-  var _iterator2 = _createForOfIteratorHelper(target.childNodes),
-      _step2;
-
-  try {
-    for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
-      var ch = _step2.value;
-
-      if (!ch.classList.contains('hide')) {
-        key = ch.textContent;
-      }
-    }
-  } catch (err) {
-    _iterator2.e(err);
-  } finally {
-    _iterator2.f();
-  }
-
-  if (target.getAttribute('data-code') !== 'CapsLock') target.classList.add('pressed');
-  var textarea = document.querySelector('#textarea');
-
-  if (!target.classList.contains('button_special')) {
-    textarea.value += key;
-  } else {
-    switch (key) {
-      case 'Backspace':
-        textarea.value = textarea.value.slice(0, -1);
-        break;
-
-      case 'Tab':
-        textarea.value += '\t';
-        break;
-
-      case 'Delete':
-        var pozition = textarea.selectionStart;
-        var text = textarea.value;
-        var arr = text.split('');
-        arr.splice(pozition, 1);
-        textarea.value = arr.join('');
-        textarea.selectionStart = pozition;
-        textarea.selectionEnd = pozition;
-        break;
-
-      case 'Enter':
-        textarea.value += '\n';
-        break;
-
-      case 'Shift':
-        document.querySelectorAll('.symbol_unshift').forEach(function (symbol) {
-          symbol.classList.add('hide');
-        });
-        document.querySelectorAll('.symbol_shift').forEach(function (symbol) {
-          symbol.classList.remove('hide');
-        });
-        break;
-
-      case 'Alt':
-        break;
-
-      default:
-        break;
-    }
-  }
-};
-
-var mouseKeyUp = function mouseKeyUp(e) {
-  e.preventDefault();
-  var target = e.currentTarget;
-  var key = '';
-
-  var _iterator3 = _createForOfIteratorHelper(target.childNodes),
-      _step3;
-
-  try {
-    for (_iterator3.s(); !(_step3 = _iterator3.n()).done;) {
-      var ch = _step3.value;
-
-      if (!ch.classList.contains('hide')) {
-        key = ch.textContent;
-      }
-    }
-  } catch (err) {
-    _iterator3.e(err);
-  } finally {
-    _iterator3.f();
-  }
-
-  if (target.getAttribute('data-code') !== 'CapsLock') target.classList.remove('pressed');
-
-  if (target.classList.contains('button_special')) {
-    switch (key) {
-      case 'Shift':
-        document.querySelectorAll('.symbol_unshift').forEach(function (symbol) {
-          symbol.classList.remove('hide');
-        });
-        document.querySelectorAll('.symbol_shift').forEach(function (symbol) {
-          symbol.classList.add('hide');
-        });
-        break;
-
-      case 'CapsLock':
-        document.querySelectorAll('.symbol_unshift').forEach(function (symbol) {
-          symbol.classList.toggle('hide');
-        });
-        document.querySelectorAll('.symbol_shift').forEach(function (symbol) {
-          symbol.classList.toggle('hide');
-        });
-        document.querySelector('.button_capslock').classList.toggle('pressed');
-        break;
-
-      default:
-        break;
-    }
-  }
-}; //change Language
-
-
-var changeLanguage = function changeLanguage(e) {
-  e.preventDefault();
-
-  if (localStorage.getItem('language') === 'eng') {
-    localStorage.setItem('language', 'ru');
-  } else {
-    localStorage.setItem('language', 'eng');
-  }
-
-  document.querySelector('.keyboard').remove();
-  var wrapper = document.querySelector('.wrapper');
-
-  if (_js_Data__WEBPACK_IMPORTED_MODULE_1__["data"]) {
+  if (_js_Data__WEBPACK_IMPORTED_MODULE_1__["default"]) {
     wrapper.append(renderKeyBoard());
-  }
+  } // add listeners
 
+
+  document.addEventListener('keydown', buttonKeyDown);
+  document.addEventListener('keyup', buttonKeyUp);
   addListeners();
-};
-
-var addListeners = function addListeners() {
-  document.querySelectorAll('.button').forEach(function (btn) {
-    return btn.addEventListener('mousedown', mouseKeyDown);
-  });
-  document.querySelectorAll('.button').forEach(function (btn) {
-    return btn.addEventListener('mouseup', mouseKeyUp);
-  });
-  document.querySelector('.button_language').addEventListener('click', changeLanguage);
 };
 
 /***/ }),
@@ -428,12 +410,12 @@ var addListeners = function addListeners() {
 /*!************************!*\
   !*** ./src/js/Data.js ***!
   \************************/
-/*! exports provided: data */
+/*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "data", function() { return data; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return data; });
 var data = {
   eng: [[{
     code: 'Backquote',
@@ -954,7 +936,7 @@ var data = {
   }, {
     code: 'Semicolon',
     key: 'ж',
-    keyShift: 'ж',
+    keyShift: 'Ж',
     keySpecial: ''
   }, {
     code: 'Quote',
@@ -1089,18 +1071,19 @@ var data = {
   }]]
 };
 
+
 /***/ }),
 
 /***/ "./src/js/Key.js":
 /*!***********************!*\
   !*** ./src/js/Key.js ***!
   \***********************/
-/*! exports provided: Key */
+/*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Key", function() { return Key; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return Key; });
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
@@ -1127,13 +1110,13 @@ var Key = /*#__PURE__*/function () {
     value: function generateKey() {
       var template = '';
       var button = document.createElement('div');
-      button.className = "button";
+      button.className = 'button';
       button.setAttribute('data-code', this.code);
 
       if (this.keySpecial) {
         button.classList.add("button_".concat(this.keySpecial.toLowerCase()), 'button_special');
       } else {
-        button.classList.add("button_key");
+        button.classList.add('button_key');
       }
 
       if (this.keySpecial === 'Space') button.classList.remove('button_special');
@@ -1146,6 +1129,8 @@ var Key = /*#__PURE__*/function () {
 
   return Key;
 }();
+
+
 
 /***/ }),
 
