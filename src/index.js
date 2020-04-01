@@ -18,6 +18,68 @@ const pressShift = () => {
     symbol.classList.remove('hide');
   });
 };
+// render wrapper
+const renderWrapper = () => {
+  const wrapper = document.createElement('div');
+  wrapper.className = 'wrapper';
+  document.body.append(wrapper);
+  return wrapper;
+};
+  // textarea rendering
+const renderTextarea = (wrapper) => {
+  const textarea = document.createElement('textarea');
+  textarea.id = 'textarea';
+  wrapper.append(textarea);
+};
+  // Keyboard rendering
+const renderRows = (dataKeyboard) => {
+  if (!localStorage.getItem('language')) {
+    localStorage.setItem('language', 'eng');
+  }
+  const dataKeys = dataKeyboard[localStorage.getItem('language')];
+  const rows = [];
+  dataKeys.forEach((dataRow) => {
+    const row = document.createElement('section');
+    row.className = 'row';
+
+    dataRow.forEach((dataKey) => {
+      const key = new Key(dataKey);
+      const button = key.generateKey();
+      row.append(button);
+    });
+    rows.push(row);
+  });
+  return rows;
+};
+
+const renderKeyBoard = () => {
+  const keyboard = document.createElement('section');
+  keyboard.className = 'keyboard';
+
+  const rows = renderRows(data);
+  rows.forEach((row) => {
+    keyboard.append(row);
+  });
+  return keyboard;
+};
+
+const changeLanguageWithCombination = (e) => {
+  e.preventDefault();
+  if (localStorage.getItem('language') === 'eng') {
+    localStorage.setItem('language', 'ru');
+  } else {
+    localStorage.setItem('language', 'eng');
+  }
+
+  document.querySelector('.keyboard').remove();
+  const wrapper = document.querySelector('.wrapper');
+  if (data) {
+    wrapper.append(renderKeyBoard());
+  }
+  document.querySelectorAll('.button').forEach((btn) => btn.addEventListener('mousedown', mouseKeyDown));
+  document.querySelectorAll('.button').forEach((btn) => btn.addEventListener('mouseup', mouseKeyUp));
+  document.querySelector('.button_language').addEventListener('click', changeLanguage);
+};
 
 // mouse events..
 const mouseKeyDown = (e) => {
@@ -69,6 +131,9 @@ const mouseKeyDown = (e) => {
         else unpressShift();
         break;
       case 'Alt':
+        if (e.shiftKey) {
+          changeLanguageWithCombination(e);
+        }
         break;
       default:
         break;
@@ -108,51 +173,6 @@ const mouseKeyUp = (e) => {
     }
   }
 };
-
-// render wrapper
-const renderWrapper = () => {
-  const wrapper = document.createElement('div');
-  wrapper.className = 'wrapper';
-  document.body.append(wrapper);
-  return wrapper;
-};
-  // textarea rendering
-const renderTextarea = (wrapper) => {
-  const textarea = document.createElement('textarea');
-  textarea.id = 'textarea';
-  wrapper.append(textarea);
-};
-  // Keyboard rendering
-const renderRows = (dataKeyboard) => {
-  if (!localStorage.getItem('language')) {
-    localStorage.setItem('language', 'eng');
-  }
-  const dataKeys = dataKeyboard[localStorage.getItem('language')];
-  const rows = [];
-  dataKeys.forEach((dataRow) => {
-    const row = document.createElement('section');
-    row.className = 'row';
-
-    dataRow.forEach((dataKey) => {
-      const key = new Key(dataKey);
-      const button = key.generateKey();
-      row.append(button);
-    });
-    rows.push(row);
-  });
-  return rows;
-};
-const renderKeyBoard = () => {
-  const keyboard = document.createElement('section');
-  keyboard.className = 'keyboard';
-
-  const rows = renderRows(data);
-  rows.forEach((row) => {
-    keyboard.append(row);
-  });
-  return keyboard;
-};
-
 // change Language
 const changeLanguage = (e) => {
   e.preventDefault();
@@ -217,6 +237,9 @@ const doSpecialKey = (e) => {
       break;
     case 'Alt':
       e.preventDefault();
+      if (e.shiftKey) {
+        changeLanguage(e);
+      }
       break;
     default:
       break;
@@ -268,13 +291,20 @@ const buttonKeyUp = (e) => {
 
 window.onload = () => {
   const wrapper = renderWrapper();
+  const title = document.createElement('h1');
+  title.innerHTML = 'Virtual Keyboard (by LVKhomyakova)';
+  title.style.color = '#fff';
+  wrapper.append(title);
   renderTextarea(wrapper);
+  const instruction = document.createElement('h2');
+  instruction.innerHTML = 'Для переключения раскладки клавиатуры нажмите: "Shift + Alt" или "ENG/RU"';
+  instruction.style.color = '#ffffff';
+  wrapper.append(instruction);
   if (data) {
     wrapper.append(renderKeyBoard());
   }
   // add listeners
   document.addEventListener('keydown', buttonKeyDown);
   document.addEventListener('keyup', buttonKeyUp);
-
   addListeners();
 };

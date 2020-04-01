@@ -46,7 +46,9 @@ module.exports = (env, options) => {
     },
     plugins: [
       new CleanWebpackPlugin(),
-      new HtmlWebpackPlugin(),
+      new HtmlWebpackPlugin({
+        title: 'Virtual Keyboard',
+      }),
       new MiniCssExtractPlugin({
         filename: 'style.css',
       }),
