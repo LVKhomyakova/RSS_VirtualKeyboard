@@ -96,7 +96,14 @@ const mouseKeyDown = (e) => {
 
   const textarea = document.querySelector('#textarea');
   if (!target.classList.contains('button_special')) {
-    textarea.value += key;
+    let pozition = textarea.selectionStart;
+    const text = textarea.value;
+    const arr = text.split('');
+    arr.splice(pozition, 0, key);
+    textarea.value = arr.join('');
+    pozition += 1;
+    textarea.selectionStart = pozition;
+    textarea.selectionEnd = pozition;
   } else {
     switch (key) {
       case 'Backspace': {
@@ -259,7 +266,14 @@ const buttonKeyDown = (e) => {
   const textarea = document.querySelector('#textarea');
   textarea.blur();
   if (!target.classList.contains('button_special')) {
-    textarea.value += key;
+    let pozition = textarea.selectionStart;
+    const text = textarea.value;
+    const arr = text.split('');
+    arr.splice(pozition, 0, key);
+    textarea.value = arr.join('');
+    pozition += 1;
+    textarea.selectionStart = pozition;
+    textarea.selectionEnd = pozition;
   } else {
     doSpecialKey(e);
   }

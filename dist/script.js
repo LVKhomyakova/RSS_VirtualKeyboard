@@ -204,19 +204,29 @@ var mouseKeyDown = function mouseKeyDown(e) {
   var textarea = document.querySelector('#textarea');
 
   if (!target.classList.contains('button_special')) {
-    textarea.value += key;
+    var pozition = textarea.selectionStart;
+    var text = textarea.value;
+    var arr = text.split('');
+    arr.splice(pozition, 0, key);
+    textarea.value = arr.join('');
+    pozition += 1;
+    textarea.selectionStart = pozition;
+    textarea.selectionEnd = pozition;
   } else {
     switch (key) {
       case 'Backspace':
         {
-          var pozition = textarea.selectionStart;
-          var text = textarea.value;
-          var arr = text.split('');
-          arr.splice(pozition - 1, 1);
-          textarea.value = arr.join('');
-          pozition -= 1;
-          textarea.selectionStart = pozition;
-          textarea.selectionEnd = pozition;
+          var _pozition = textarea.selectionStart;
+          var _text = textarea.value;
+
+          var _arr = _text.split('');
+
+          _arr.splice(_pozition - 1, 1);
+
+          textarea.value = _arr.join('');
+          _pozition -= 1;
+          textarea.selectionStart = _pozition;
+          textarea.selectionEnd = _pozition;
           break;
         }
 
@@ -226,16 +236,16 @@ var mouseKeyDown = function mouseKeyDown(e) {
 
       case 'Delete':
         {
-          var _pozition = textarea.selectionStart;
-          var _text = textarea.value;
+          var _pozition2 = textarea.selectionStart;
+          var _text2 = textarea.value;
 
-          var _arr = _text.split('');
+          var _arr2 = _text2.split('');
 
-          _arr.splice(_pozition, 1);
+          _arr2.splice(_pozition2, 1);
 
-          textarea.value = _arr.join('');
-          textarea.selectionStart = _pozition;
-          textarea.selectionEnd = _pozition;
+          textarea.value = _arr2.join('');
+          textarea.selectionStart = _pozition2;
+          textarea.selectionEnd = _pozition2;
           break;
         }
 
@@ -353,16 +363,16 @@ var doSpecialKey = function doSpecialKey(e) {
     case 'Delete':
       {
         e.preventDefault();
-        var _pozition2 = textarea.selectionStart;
-        var _text2 = textarea.value;
+        var _pozition3 = textarea.selectionStart;
+        var _text3 = textarea.value;
 
-        var _arr2 = _text2.split('');
+        var _arr3 = _text3.split('');
 
-        _arr2.splice(_pozition2, 1);
+        _arr3.splice(_pozition3, 1);
 
-        textarea.value = _arr2.join('');
-        textarea.selectionStart = _pozition2;
-        textarea.selectionEnd = _pozition2;
+        textarea.value = _arr3.join('');
+        textarea.selectionStart = _pozition3;
+        textarea.selectionEnd = _pozition3;
         break;
       }
 
@@ -406,7 +416,14 @@ var buttonKeyDown = function buttonKeyDown(e) {
   textarea.blur();
 
   if (!target.classList.contains('button_special')) {
-    textarea.value += key;
+    var pozition = textarea.selectionStart;
+    var text = textarea.value;
+    var arr = text.split('');
+    arr.splice(pozition, 0, key);
+    textarea.value = arr.join('');
+    pozition += 1;
+    textarea.selectionStart = pozition;
+    textarea.selectionEnd = pozition;
   } else {
     doSpecialKey(e);
   }
