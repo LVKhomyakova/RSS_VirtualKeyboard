@@ -321,6 +321,22 @@ var doSpecialKey = function doSpecialKey(e) {
         break;
       }
 
+    case 'Delete':
+      {
+        e.preventDefault();
+        var _pozition2 = textarea.selectionStart;
+        var _text2 = textarea.value;
+
+        var _arr2 = _text2.split('');
+
+        _arr2.splice(_pozition2, 1);
+
+        textarea.value = _arr2.join('');
+        textarea.selectionStart = _pozition2;
+        textarea.selectionEnd = _pozition2;
+        break;
+      }
+
     case 'Tab':
       e.preventDefault();
       textarea.value += '\t';

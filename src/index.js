@@ -193,6 +193,17 @@ const doSpecialKey = (e) => {
       textarea.selectionEnd = pozition;
       break;
     }
+    case 'Delete': {
+      e.preventDefault();
+      const pozition = textarea.selectionStart;
+      const text = textarea.value;
+      const arr = text.split('');
+      arr.splice(pozition, 1);
+      textarea.value = arr.join('');
+      textarea.selectionStart = pozition;
+      textarea.selectionEnd = pozition;
+      break;
+    }
     case 'Tab':
       e.preventDefault();
       textarea.value += '\t';
