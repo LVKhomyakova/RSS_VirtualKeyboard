@@ -42,6 +42,9 @@ const renderKeyBoard = function () {
 }
 
 const renderRows = function(data) {
+    if(!localStorage.getItem('language')){
+        localStorage.setItem('language', 'eng')
+    }
     let dataKeys = data[localStorage.getItem('language')];
     let rows = [];
     dataKeys.forEach( (dataRow) => { 
