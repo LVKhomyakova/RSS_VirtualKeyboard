@@ -10,7 +10,7 @@
 
 @mixin button-view($size: $btn-width, $background: $light-btn-color) {
     width: $size;
-    height: $size;
+    min-height: $btn-height;
     margin: $btn-margin;
     padding: $btn-padding;
 

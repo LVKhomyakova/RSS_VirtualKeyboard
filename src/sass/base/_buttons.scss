@@ -1,39 +1,49 @@
 .button{
-    @include button-view();
+  @include button-view();
     display: flex;
     justify-content: center;
+    @extend %shadow;
         
     & .symbol{
-      @include font();
-      line-height: 2.5rem;
+      @include font($height: 3rem);
+      // line-height: 2.5rem;
     }
     &:hover{
       background-color: $pressed-btn-color;
-    }
+  }
 }
 
 .button_special{
-    @include button-view();
-    & .symbol{
-        @include font(1.4rem);
+  @include button-view();
+  & .symbol{
+    @include font($size: 1.4rem, $height: 3.6rem);
     
-    }
-    background-color: $dark-btn-color;
+  }
+  background-color: $dark-btn-color;
 }
 
-.button_right-ctrl, .button_left-ctrl, .button_left-shift, .button_backspace, .button_tab {
+.button_right-ctrl,
+.button_left-ctrl,
+.button_left-shift,
+.button_backspace,
+.button_tab {
     width: 7%;
-  }
+}
   
-  .button_enter, .button_capslock {
-    width: 8.5%;
-  }
+.button_enter,
+.button_capslock {
+  width: 8.5%;
+}
   
-  .button_space {
+.button_space {
     width: 35%;
 }
 
 .pressed{
+  background-color: $pressed-btn-color;
+  transform: scale(0.9);
+}
+.clicked{
   background-color: $pressed-btn-color;
   transform: scale(0.9);
 }

@@ -5,13 +5,16 @@ $dark-btn-color: #37415e;
 $pressed-btn-color: #d88b33;
 $keyboard-color: #444f6f;
 $btn-border-color: #2c334a;
+$shadow-color: #151924;
 
 //font
-$font-size: 1.5rem;
+$font-size: 1.6rem;
 $text-color: #ffffff;
 
 //button
 $btn-width: 4vw;
+$btn-height: 40px;
+
 $border-radius: 5px;
 $btn-margin: 3px;
 $btn-padding: 5px;
@@ -25,5 +28,5 @@ $content-min-width: 700px;
 $keyboard-width: 100%;
 
 //textarea
-$textarea-width: 100%;
-$textarea-height: 20vw;
+$textarea-width: calc(100% - 13px);
+$textarea-padding: 5px;

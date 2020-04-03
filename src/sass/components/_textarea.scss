@@ -1,6 +1,8 @@
 
 #textarea{
     width: $textarea-width;
-    height: $textarea-height;
+    padding: $textarea-padding;
+    border-radius: $border-radius;
     resize: none;
+    @extend %shadow;
 }
