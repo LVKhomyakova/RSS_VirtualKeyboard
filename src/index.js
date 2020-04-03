@@ -64,7 +64,7 @@ const renderKeyBoard = () => {
 };
 //---------------------------------------------
 // change Language
-function changeLanguage(e) {
+const changeLanguage = (e) => {
   e.preventDefault();
   if (localStorage.getItem('language') === 'eng') {
     localStorage.setItem('language', 'ru');
@@ -73,12 +73,13 @@ function changeLanguage(e) {
   }
   document.querySelector('.keyboard').remove();
   window.onload();
-}
+};
 // mouse events..
 const mouseKeyUp = (e) => {
   e.preventDefault();
   const target = e.currentTarget;
   let key = '';
+  if (!target) return;
   target.childNodes.forEach((ch) => {
     if (!ch.classList.contains('hide')) {
       key = ch.textContent;
@@ -111,12 +112,14 @@ const mouseKeyUp = (e) => {
 };
 const mouseKeyOut = (e) => {
   const target = e.currentTarget;
+  if (!target) return;
   if (target.getAttribute('data-code') !== 'CapsLock') target.classList.remove('pressed');
 };
 const mouseKeyDown = (e) => {
   e.preventDefault();
   const target = e.currentTarget;
   let key = '';
+  if (!target) return;
   target.childNodes.forEach((ch) => {
     if (!ch.classList.contains('hide')) {
       key = ch.textContent;
@@ -274,6 +277,7 @@ const doSpecialKey = (e) => {
 const buttonKeyDown = (e) => {
   const target = document.querySelector(`.button[data-code = ${e.code}]`);
   let key = '';
+  if (!target) return;
   target.childNodes.forEach((ch) => {
     if (!ch.classList.contains('hide')) {
       key = ch.textContent;
@@ -300,6 +304,7 @@ const buttonKeyDown = (e) => {
 };
 const buttonKeyUp = (e) => {
   const target = document.querySelector(`.button[data-code = ${e.code}]`);
+  if (!target) return;
   if (e.code !== 'CapsLock') target.classList.remove('pressed');
   if (target.classList.contains('button_special')) {
     switch (e.key) {
@@ -323,11 +328,11 @@ const buttonKeyUp = (e) => {
   }
 };
 
-function addListeners() {
+const addListeners = () => {
   document.querySelectorAll('.button').forEach((btn) => btn.addEventListener('mousedown', mouseKeyDown));
   document.querySelectorAll('.button').forEach((btn) => btn.addEventListener('mouseup', mouseKeyUp));
   document.querySelectorAll('.button').forEach((btn) => btn.addEventListener('mouseout', mouseKeyOut));
-}
+};
 
 window.onload = () => {
   localStorage.setItem('capslockPressed', 'false');

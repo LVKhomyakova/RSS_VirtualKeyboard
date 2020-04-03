@@ -167,7 +167,7 @@ var renderKeyBoard = function renderKeyBoard() {
 // change Language
 
 
-function changeLanguage(e) {
+var changeLanguage = function changeLanguage(e) {
   e.preventDefault();
 
   if (localStorage.getItem('language') === 'eng') {
@@ -178,13 +178,14 @@ function changeLanguage(e) {
 
   document.querySelector('.keyboard').remove();
   window.onload();
-} // mouse events..
+}; // mouse events..
 
 
 var mouseKeyUp = function mouseKeyUp(e) {
   e.preventDefault();
   var target = e.currentTarget;
   var key = '';
+  if (!target) return;
   target.childNodes.forEach(function (ch) {
     if (!ch.classList.contains('hide')) {
       key = ch.textContent;
@@ -222,6 +223,7 @@ var mouseKeyUp = function mouseKeyUp(e) {
 
 var mouseKeyOut = function mouseKeyOut(e) {
   var target = e.currentTarget;
+  if (!target) return;
   if (target.getAttribute('data-code') !== 'CapsLock') target.classList.remove('pressed');
 };
 
@@ -229,6 +231,7 @@ var mouseKeyDown = function mouseKeyDown(e) {
   e.preventDefault();
   var target = e.currentTarget;
   var key = '';
+  if (!target) return;
   target.childNodes.forEach(function (ch) {
     if (!ch.classList.contains('hide')) {
       key = ch.textContent;
@@ -442,6 +445,7 @@ var doSpecialKey = function doSpecialKey(e) {
 var buttonKeyDown = function buttonKeyDown(e) {
   var target = document.querySelector(".button[data-code = ".concat(e.code, "]"));
   var key = '';
+  if (!target) return;
   target.childNodes.forEach(function (ch) {
     if (!ch.classList.contains('hide')) {
       key = ch.textContent;
@@ -471,6 +475,7 @@ var buttonKeyDown = function buttonKeyDown(e) {
 
 var buttonKeyUp = function buttonKeyUp(e) {
   var target = document.querySelector(".button[data-code = ".concat(e.code, "]"));
+  if (!target) return;
   if (e.code !== 'CapsLock') target.classList.remove('pressed');
 
   if (target.classList.contains('button_special')) {
@@ -497,7 +502,7 @@ var buttonKeyUp = function buttonKeyUp(e) {
   }
 };
 
-function addListeners() {
+var addListeners = function addListeners() {
   document.querySelectorAll('.button').forEach(function (btn) {
     return btn.addEventListener('mousedown', mouseKeyDown);
   });
@@ -507,7 +512,7 @@ function addListeners() {
   document.querySelectorAll('.button').forEach(function (btn) {
     return btn.addEventListener('mouseout', mouseKeyOut);
   });
-}
+};
 
 window.onload = function () {
   localStorage.setItem('capslockPressed', 'false');
