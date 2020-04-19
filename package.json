@@ -2,6 +2,12 @@
   "name": "virtualkeyboard",
   "version": "1.0.0",
   "description": "",
+  "author": "LV.Khomyakova@gmail.com",
+  "scripts": {
+    "style": "sass --watch src/sass/style.scss src/sass/style.css",
+    "dev": "webpack --mode development",
+    "prod": "webpack --mode production"
+  },
   "main": "index.js",
   "dependencies": {},
   "devDependencies": {
@@ -23,16 +29,10 @@
     "webpack": "^4.42.1",
     "webpack-cli": "^3.3.11"
   },
-  "scripts": {
-    "style": "sass --watch src/sass/style.scss src/sass/style.css",
-    "dev": "webpack --mode development",
-    "prod": "webpack --mode production"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/LVKhomyakova/VirtualKeyboard.git"
   },
-  "author": "LV.Khomyakova@gmail.com",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/LVKhomyakova/VirtualKeyboard/issues"
