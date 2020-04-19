@@ -569,11 +569,20 @@ window.onload = function () {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return Key; });
+/* harmony import */ var _constants_attributes_constants__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../constants/attributes-constants */ "./src/js/constants/attributes-constants.js");
+/* harmony import */ var _constants_class_names_constants__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../constants/class-names-constants */ "./src/js/constants/class-names-constants.js");
+/* harmony import */ var _constants_key_special_constants__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../constants/key-special-constants */ "./src/js/constants/key-special-constants.js");
+/* harmony import */ var _helpers_utils__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../helpers/utils */ "./src/js/helpers/utils.js");
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+
+
+
+
 
 var Key = /*#__PURE__*/function () {
   function Key(_ref) {
@@ -594,19 +603,25 @@ var Key = /*#__PURE__*/function () {
     key: "generateKey",
     value: function generateKey() {
       var template = '';
-      var button = document.createElement('div');
-      button.className = 'button';
-      button.setAttribute('data-code', this.code);
+      var button = Object(_helpers_utils__WEBPACK_IMPORTED_MODULE_3__["default"])('div', [{
+        name: 'className',
+        value: _constants_class_names_constants__WEBPACK_IMPORTED_MODULE_1__["default"].BUTTON
+      }], [{
+        name: _constants_attributes_constants__WEBPACK_IMPORTED_MODULE_0__["default"].DATA_CODE,
+        value: this.code
+      }]);
 
       if (this.keySpecial) {
-        button.classList.add("button_".concat(this.keySpecial.toLowerCase()), 'button_special');
+        button.classList.add("button_".concat(this.keySpecial.toLowerCase()), _constants_class_names_constants__WEBPACK_IMPORTED_MODULE_1__["default"].BUTTON_SPECIAL);
       } else {
-        button.classList.add('button_key');
+        button.classList.add(_constants_class_names_constants__WEBPACK_IMPORTED_MODULE_1__["default"].BUTTON_KEY);
       }
 
-      if (this.keySpecial === 'Space') button.classList.remove('button_special');
-      template += "<span class=\"symbol symbol_unshift\">".concat(this.key, "</span>");
-      template += "<span class=\"symbol symbol_shift hide\">".concat(this.keyShift, "</span>");
+      if (this.keySpecial === _constants_key_special_constants__WEBPACK_IMPORTED_MODULE_2__["default"].SPACE) {
+        button.classList.remove(_constants_class_names_constants__WEBPACK_IMPORTED_MODULE_1__["default"].BUTTON_SPECIAL);
+      }
+
+      template += "<span class=\"".concat(_constants_class_names_constants__WEBPACK_IMPORTED_MODULE_1__["default"].SYMBOL, " ").concat(_constants_class_names_constants__WEBPACK_IMPORTED_MODULE_1__["default"].SYMBOL_UNSHIFT, "\">").concat(this.key, "</span>") + "<span class=\"".concat(_constants_class_names_constants__WEBPACK_IMPORTED_MODULE_1__["default"].SYMBOL, " ").concat(_constants_class_names_constants__WEBPACK_IMPORTED_MODULE_1__["default"].SYMBOL_SHIFT, " ").concat(_constants_class_names_constants__WEBPACK_IMPORTED_MODULE_1__["default"].HIDE, "\">").concat(this.keyShift, "</span>");
       button.innerHTML = template;
       return button;
     }
@@ -616,6 +631,61 @@ var Key = /*#__PURE__*/function () {
 }();
 
 
+
+/***/ }),
+
+/***/ "./src/js/constants/attributes-constants.js":
+/*!**************************************************!*\
+  !*** ./src/js/constants/attributes-constants.js ***!
+  \**************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+var attributes = {
+  DATA_CODE: 'data-code',
+  ROWS: 'rows'
+};
+/* harmony default export */ __webpack_exports__["default"] = (attributes);
+
+/***/ }),
+
+/***/ "./src/js/constants/class-names-constants.js":
+/*!***************************************************!*\
+  !*** ./src/js/constants/class-names-constants.js ***!
+  \***************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+var classNamesConstants = {
+  BUTTON: 'button',
+  BUTTON_SPECIAL: 'button_special',
+  BUTTON_KEY: 'button_key',
+  SYMBOL: 'symbol',
+  SYMBOL_UNSHIFT: 'symbol_unshift',
+  SYMBOL_SHIFT: 'symbol_shift',
+  HIDE: 'hide'
+};
+/* harmony default export */ __webpack_exports__["default"] = (classNamesConstants);
+
+/***/ }),
+
+/***/ "./src/js/constants/key-special-constants.js":
+/*!***************************************************!*\
+  !*** ./src/js/constants/key-special-constants.js ***!
+  \***************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+var keySpecialConstants = {
+  SPACE: 'Space'
+};
+/* harmony default export */ __webpack_exports__["default"] = (keySpecialConstants);
 
 /***/ }),
 
@@ -1284,6 +1354,31 @@ var data = {
   }]]
 };
 
+
+/***/ }),
+
+/***/ "./src/js/helpers/utils.js":
+/*!*********************************!*\
+  !*** ./src/js/helpers/utils.js ***!
+  \*********************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return createDOMElement; });
+function createDOMElement(type) {
+  var properties = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : [];
+  var attributes = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : [];
+  var elem = document.createElement(type);
+  properties.forEach(function (property) {
+    elem[property.name] = property.value;
+  });
+  attributes.forEach(function (attribute) {
+    elem.setAttribute(attribute.name, attribute.value);
+  });
+  return elem;
+}
 
 /***/ }),
 

@@ -1,3 +1,8 @@
+import attributes from '../constants/attributes-constants';
+import classNamesConstants from '../constants/class-names-constants';
+import keySpecialConstants from '../constants/key-special-constants';
+import createDOMElement from '../helpers/utils';
+
 class Key {
   constructor({
     code, key, keyShift, keySpecial,
@@ -10,18 +15,23 @@ class Key {
 
   generateKey() {
     let template = '';
-    const button = document.createElement('div');
-    button.className = 'button';
-    button.setAttribute('data-code', this.code);
-    if (this.keySpecial) {
-      button.classList.add(`button_${this.keySpecial.toLowerCase()}`, 'button_special');
-    } else {
-      button.classList.add('button_key');
-    }
-    if (this.keySpecial === 'Space') button.classList.remove('button_special');
+    const button = createDOMElement('div', [{
+      name: 'className', value: classNamesConstants.BUTTON,
+    }], [{
+      name: attributes.DATA_CODE, value: this.code,
+    }]);
 
-    template += `<span class="symbol symbol_unshift">${this.key}</span>`;
-    template += `<span class="symbol symbol_shift hide">${this.keyShift}</span>`;
+    if (this.keySpecial) {
+      button.classList.add(`button_${this.keySpecial.toLowerCase()}`, classNamesConstants.BUTTON_SPECIAL);
+    } else {
+      button.classList.add(classNamesConstants.BUTTON_KEY);
+    }
+    if (this.keySpecial === keySpecialConstants.SPACE) {
+      button.classList.remove(classNamesConstants.BUTTON_SPECIAL);
+    }
+
+    template += `<span class="${classNamesConstants.SYMBOL} ${classNamesConstants.SYMBOL_UNSHIFT}">${this.key}</span>`
+              + `<span class="${classNamesConstants.SYMBOL} ${classNamesConstants.SYMBOL_SHIFT} ${classNamesConstants.HIDE}">${this.keyShift}</span>`;
     button.innerHTML = template;
     return button;
   }

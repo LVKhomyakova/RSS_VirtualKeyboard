@@ -1,5 +1,5 @@
-import data from './js/Data';
-import Key from './js/Key';
+import data from './js/data/Data';
+import Key from './js/components/Key';
 
 const unpressShift = () => {
   document.querySelectorAll('.symbol_unshift').forEach((symbol) => {
@@ -277,7 +277,7 @@ const doSpecialKey = (e) => {
 const buttonKeyDown = (e) => {
   const target = document.querySelector(`.button[data-code = ${e.code}]`);
   let key = '';
-  if (!target) return;
+  if (!target) { return; }
   target.childNodes.forEach((ch) => {
     if (!ch.classList.contains('hide')) {
       key = ch.textContent;
@@ -304,7 +304,7 @@ const buttonKeyDown = (e) => {
 };
 const buttonKeyUp = (e) => {
   const target = document.querySelector(`.button[data-code = ${e.code}]`);
-  if (!target) return;
+  if (!target) { return; }
   if (e.code !== 'CapsLock') target.classList.remove('pressed');
   if (target.classList.contains('button_special')) {
     switch (e.key) {
