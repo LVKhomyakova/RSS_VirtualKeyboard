@@ -1,0 +1,19 @@
+@mixin font ($size: $font-size, $height: $font-size, $color: $text-color, $weight: normal, $style: normal) {
+    font-size: $size;
+    line-height: $height;
+    font-weight: $weight;
+    font-style: $style;
+    color: $color;
+}
+@mixin button-view($size: $btn-width, $background: $light-btn-color) {
+    width: $size;
+    min-height: $btn-height;
+    margin: $btn-margin;
+    padding: $btn-padding;
+
+    background-color: $background;
+    border: $btn-border-size solid $btn-border-color;
+    border-radius: $border-radius;
+}
+
+

@@ -1,0 +1,7 @@
+#textarea{
+    width: $textarea-width;
+    padding: $textarea-padding;
+    border-radius: $border-radius;
+    resize: none;
+    @extend %shadow;
+}
