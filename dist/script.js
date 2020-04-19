@@ -96,465 +96,50 @@
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _js_data_Data__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./js/data/Data */ "./src/js/data/Data.js");
-/* harmony import */ var _js_components_Key__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./js/components/Key */ "./src/js/components/Key.js");
+/* harmony import */ var _js_keyboard_keyboard_elements__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./js/keyboard/keyboard-elements */ "./src/js/keyboard/keyboard-elements.js");
+/* harmony import */ var _js_events_event_listeners__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./js/events/event-listeners */ "./src/js/events/event-listeners.js");
+/* harmony import */ var _js_constants_class_names_constants__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./js/constants/class-names-constants */ "./src/js/constants/class-names-constants.js");
+/* harmony import */ var _js_constants_localstorage_constants__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./js/constants/localstorage-constants */ "./src/js/constants/localstorage-constants.js");
 
 
 
-var unpressShift = function unpressShift() {
-  document.querySelectorAll('.symbol_unshift').forEach(function (symbol) {
-    symbol.classList.remove('hide');
-  });
-  document.querySelectorAll('.symbol_shift').forEach(function (symbol) {
-    symbol.classList.add('hide');
-  });
-};
 
-var pressShift = function pressShift() {
-  document.querySelectorAll('.symbol_unshift').forEach(function (symbol) {
-    symbol.classList.add('hide');
-  });
-  document.querySelectorAll('.symbol_shift').forEach(function (symbol) {
-    symbol.classList.remove('hide');
-  });
-}; // render wrapper
 
-
-var renderWrapper = function renderWrapper() {
-  var wrapper = document.createElement('div');
-  wrapper.className = 'wrapper';
-  document.body.append(wrapper);
-  return wrapper;
-}; // textarea rendering
-
-
-var renderTextarea = function renderTextarea(wrapper) {
-  var textarea = document.createElement('textarea');
-  textarea.id = 'textarea';
-  textarea.setAttribute('rows', '15');
-  wrapper.append(textarea);
-}; // Keyboard rendering
-
-
-var renderRows = function renderRows(dataKeyboard) {
-  if (!localStorage.getItem('language')) {
-    localStorage.setItem('language', 'eng');
-  }
-
-  var dataKeys = dataKeyboard[localStorage.getItem('language')];
-  var rows = [];
-  dataKeys.forEach(function (dataRow) {
-    var row = document.createElement('section');
-    row.className = 'row';
-    dataRow.forEach(function (dataKey) {
-      var key = new _js_components_Key__WEBPACK_IMPORTED_MODULE_1__["default"](dataKey);
-      var button = key.generateKey();
-      row.append(button);
-    });
-    rows.push(row);
-  });
-  return rows;
-};
-
-var renderKeyBoard = function renderKeyBoard() {
-  var keyboard = document.createElement('section');
-  keyboard.className = 'keyboard';
-  var rows = renderRows(_js_data_Data__WEBPACK_IMPORTED_MODULE_0__["default"]);
-  rows.forEach(function (row) {
-    keyboard.append(row);
-  });
-  return keyboard;
-}; //---------------------------------------------
-// change Language
-
-
-var changeLanguage = function changeLanguage(e) {
-  e.preventDefault();
-
-  if (localStorage.getItem('language') === 'eng') {
-    localStorage.setItem('language', 'ru');
-  } else {
-    localStorage.setItem('language', 'eng');
-  }
-
-  document.querySelector('.keyboard').remove();
-  window.onload();
-}; // mouse events..
-
-
-var mouseKeyUp = function mouseKeyUp(e) {
-  e.preventDefault();
-  var target = e.currentTarget;
-  var key = '';
-  if (!target) return;
-  target.childNodes.forEach(function (ch) {
-    if (!ch.classList.contains('hide')) {
-      key = ch.textContent;
-    }
-  });
-  if (target.getAttribute('data-code') !== 'CapsLock') target.classList.remove('pressed');
-
-  if (target.classList.contains('button_special')) {
-    switch (key) {
-      case 'Shift':
-        if (localStorage.getItem('capslockPressed') !== 'false') {
-          pressShift();
-        } else {
-          unpressShift();
-        }
-
-        break;
-
-      case 'CapsLock':
-        if (localStorage.getItem('capslockPressed') === 'false') {
-          pressShift();
-          localStorage.setItem('capslockPressed', 'true');
-        } else {
-          unpressShift();
-          localStorage.setItem('capslockPressed', 'false');
-        }
-
-        break;
-
-      default:
-        break;
-    }
-  }
-};
-
-var mouseKeyOut = function mouseKeyOut(e) {
-  var target = e.currentTarget;
-  if (!target) return;
-  if (target.getAttribute('data-code') !== 'CapsLock') target.classList.remove('pressed');
-};
-
-var mouseKeyDown = function mouseKeyDown(e) {
-  e.preventDefault();
-  var target = e.currentTarget;
-  var key = '';
-  if (!target) return;
-  target.childNodes.forEach(function (ch) {
-    if (!ch.classList.contains('hide')) {
-      key = ch.textContent;
-    }
-  });
-
-  if (target.getAttribute('data-code') !== 'CapsLock') {
-    target.classList.add('pressed');
-  } else {
-    target.classList.toggle('pressed');
-  }
-
-  var textarea = document.querySelector('#textarea');
-
-  if (!target.classList.contains('button_special')) {
-    var pozition = textarea.selectionStart;
-    var text = textarea.value;
-    var arr = text.split('');
-    arr.splice(pozition, 0, key);
-    textarea.value = arr.join('');
-    pozition += 1;
-    textarea.selectionStart = pozition;
-    textarea.selectionEnd = pozition;
-  } else {
-    switch (key) {
-      case 'Backspace':
-        {
-          var _pozition = textarea.selectionStart;
-          var _text = textarea.value;
-
-          var _arr = _text.split('');
-
-          _arr.splice(_pozition - 1, 1);
-
-          textarea.value = _arr.join('');
-          _pozition -= 1;
-          textarea.selectionStart = _pozition;
-          textarea.selectionEnd = _pozition;
-          break;
-        }
-
-      case 'Tab':
-        {
-          var _pozition2 = textarea.selectionStart;
-          var _text2 = textarea.value;
-
-          var _arr2 = _text2.split('');
-
-          _arr2.splice(_pozition2, 0, '\t');
-
-          textarea.value = _arr2.join('');
-          _pozition2 += 1;
-          textarea.selectionStart = _pozition2;
-          textarea.selectionEnd = _pozition2;
-          break;
-        }
-
-      case 'Delete':
-        {
-          var _pozition3 = textarea.selectionStart;
-          var _text3 = textarea.value;
-
-          var _arr3 = _text3.split('');
-
-          _arr3.splice(_pozition3, 1);
-
-          textarea.value = _arr3.join('');
-          textarea.selectionStart = _pozition3;
-          textarea.selectionEnd = _pozition3;
-          break;
-        }
-
-      case 'Enter':
-        {
-          var _pozition4 = textarea.selectionStart;
-          var _text4 = textarea.value;
-
-          var _arr4 = _text4.split('');
-
-          _arr4.splice(_pozition4, 0, '\n');
-
-          textarea.value = _arr4.join('');
-          _pozition4 += 1;
-          textarea.selectionStart = _pozition4;
-          textarea.selectionEnd = _pozition4;
-          break;
-        }
-
-      case 'Shift':
-        if (localStorage.getItem('capslockPressed') === 'false') {
-          pressShift();
-        } else {
-          unpressShift();
-        }
-
-        break;
-
-      case 'Alt':
-        if (e.shiftKey) {
-          changeLanguage(e);
-          document.querySelectorAll('.button').forEach(function (btn) {
-            return btn.addEventListener('mousedown', mouseKeyDown);
-          });
-          document.querySelectorAll('.button').forEach(function (btn) {
-            return btn.addEventListener('mouseup', mouseKeyUp);
-          });
-          document.querySelectorAll('.button').forEach(function (btn) {
-            return btn.addEventListener('mouseout', mouseKeyOut);
-          });
-        }
-
-        break;
-
-      default:
-        break;
-    }
-  }
-}; // keyboard events..
-
-
-var doSpecialKey = function doSpecialKey(e) {
-  var textarea = document.querySelector('#textarea');
-
-  switch (e.key) {
-    case 'Backspace':
-      {
-        e.preventDefault();
-        var pozition = textarea.selectionStart;
-        var text = textarea.value;
-        var arr = text.split('');
-        arr.splice(pozition - 1, 1);
-        textarea.value = arr.join('');
-        pozition -= 1;
-        textarea.selectionStart = pozition;
-        textarea.selectionEnd = pozition;
-        break;
-      }
-
-    case 'Delete':
-      {
-        e.preventDefault();
-        var _pozition5 = textarea.selectionStart;
-        var _text5 = textarea.value;
-
-        var _arr5 = _text5.split('');
-
-        _arr5.splice(_pozition5, 1);
-
-        textarea.value = _arr5.join('');
-        textarea.selectionStart = _pozition5;
-        textarea.selectionEnd = _pozition5;
-        break;
-      }
-
-    case 'Tab':
-      {
-        e.preventDefault();
-        var _pozition6 = textarea.selectionStart;
-        var _text6 = textarea.value;
-
-        var _arr6 = _text6.split('');
-
-        _arr6.splice(_pozition6, 0, '\t');
-
-        textarea.value = _arr6.join('');
-        _pozition6 += 1;
-        textarea.selectionStart = _pozition6;
-        textarea.selectionEnd = _pozition6;
-        break;
-      }
-
-    case 'Enter':
-      {
-        var _pozition7 = textarea.selectionStart;
-        var _text7 = textarea.value;
-
-        var _arr7 = _text7.split('');
-
-        _arr7.splice(_pozition7, 0, '\n');
-
-        textarea.value = _arr7.join('');
-        _pozition7 += 1;
-        textarea.selectionStart = _pozition7;
-        textarea.selectionEnd = _pozition7;
-        break;
-      }
-
-    case 'Shift':
-      if (localStorage.getItem('capslockPressed') === 'false') {
-        pressShift();
-      } else {
-        unpressShift();
-      }
-
-      break;
-
-    case 'Alt':
-      e.preventDefault();
-
-      if (e.ctrlKey) {
-        changeLanguage(e);
-      }
-
-      break;
-
-    default:
-      break;
-  }
-};
-
-var buttonKeyDown = function buttonKeyDown(e) {
-  var target = document.querySelector(".button[data-code = ".concat(e.code, "]"));
-  var key = '';
-
-  if (!target) {
-    return;
-  }
-
-  target.childNodes.forEach(function (ch) {
-    if (!ch.classList.contains('hide')) {
-      key = ch.textContent;
-    }
-  });
-
-  if (e.code !== 'CapsLock') {
-    target.classList.add('pressed');
-  }
-
-  var textarea = document.querySelector('#textarea');
-
-  if (!target.classList.contains('button_special')) {
-    textarea.blur();
-    var pozition = textarea.selectionStart;
-    var text = textarea.value;
-    var arr = text.split('');
-    arr.splice(pozition, 0, key);
-    textarea.value = arr.join('');
-    pozition += 1;
-    textarea.selectionStart = pozition;
-    textarea.selectionEnd = pozition;
-  } else {
-    doSpecialKey(e);
-  }
-};
-
-var buttonKeyUp = function buttonKeyUp(e) {
-  var target = document.querySelector(".button[data-code = ".concat(e.code, "]"));
-
-  if (!target) {
-    return;
-  }
-
-  if (e.code !== 'CapsLock') target.classList.remove('pressed');
-
-  if (target.classList.contains('button_special')) {
-    switch (e.key) {
-      case 'Shift':
-        if (localStorage.getItem('capslockPressed') === 'true') pressShift();else unpressShift();
-        break;
-
-      case 'CapsLock':
-        if (localStorage.getItem('capslockPressed') === 'false') {
-          pressShift();
-          localStorage.setItem('capslockPressed', 'true');
-        } else {
-          unpressShift();
-          localStorage.setItem('capslockPressed', 'false');
-        }
-
-        document.querySelector('.button_capslock').classList.toggle('pressed');
-        break;
-
-      default:
-        break;
-    }
-  }
-};
-
-var addListeners = function addListeners() {
-  document.querySelectorAll('.button').forEach(function (btn) {
-    return btn.addEventListener('mousedown', mouseKeyDown);
-  });
-  document.querySelectorAll('.button').forEach(function (btn) {
-    return btn.addEventListener('mouseup', mouseKeyUp);
-  });
-  document.querySelectorAll('.button').forEach(function (btn) {
-    return btn.addEventListener('mouseout', mouseKeyOut);
-  });
-};
 
 window.onload = function () {
-  localStorage.setItem('capslockPressed', 'false');
+  localStorage.setItem(_js_constants_localstorage_constants__WEBPACK_IMPORTED_MODULE_4__["default"].CAPSLOCKPRESSED, 'false');
 
-  if (!document.querySelector('.wrapper')) {
-    var _wrapper = renderWrapper(); // render title
+  if (!document.querySelector(".".concat(_js_constants_class_names_constants__WEBPACK_IMPORTED_MODULE_3__["default"].WRAPPER))) {
+    var _wrapper = _js_keyboard_keyboard_elements__WEBPACK_IMPORTED_MODULE_1__["default"].renderWrapper();
 
+    document.body.append(_wrapper);
 
-    var title = document.createElement('h1');
-    title.innerHTML = 'Virtual Keyboard (by LVKhomyakova)';
-    title.style.color = '#fff';
+    _wrapper.append(_js_keyboard_keyboard_elements__WEBPACK_IMPORTED_MODULE_1__["default"].renderTitle());
 
-    _wrapper.append(title);
+    _wrapper.append(_js_keyboard_keyboard_elements__WEBPACK_IMPORTED_MODULE_1__["default"].renderTextarea());
 
-    renderTextarea(_wrapper); // render instruction
-
-    var instruction = document.createElement('h2');
-    instruction.innerHTML = 'Сhange language (for Windows): Ctrl + Alt or ENG/RU';
-    instruction.style.color = '#ffffff';
-
-    _wrapper.append(instruction);
+    _wrapper.append(_js_keyboard_keyboard_elements__WEBPACK_IMPORTED_MODULE_1__["default"].renderInstruction());
   }
 
-  var wrapper = document.querySelector('.wrapper');
+  var wrapper = document.querySelector(".".concat(_js_constants_class_names_constants__WEBPACK_IMPORTED_MODULE_3__["default"].WRAPPER));
 
   if (_js_data_Data__WEBPACK_IMPORTED_MODULE_0__["default"]) {
-    wrapper.append(renderKeyBoard());
+    wrapper.append(_js_keyboard_keyboard_elements__WEBPACK_IMPORTED_MODULE_1__["default"].renderKeyBoard());
   } // add listeners
 
 
-  document.addEventListener('keydown', buttonKeyDown);
-  document.addEventListener('keyup', buttonKeyUp);
-  document.querySelector('.button_language').addEventListener('click', changeLanguage);
-  addListeners();
+  document.addEventListener('keydown', _js_events_event_listeners__WEBPACK_IMPORTED_MODULE_2__["default"].buttonKeyDown);
+  document.addEventListener('keyup', _js_events_event_listeners__WEBPACK_IMPORTED_MODULE_2__["default"].buttonKeyUp);
+  document.querySelector(".".concat(_js_constants_class_names_constants__WEBPACK_IMPORTED_MODULE_3__["default"].BUTTON_LANGUAGE)).addEventListener('click', _js_events_event_listeners__WEBPACK_IMPORTED_MODULE_2__["default"].changeLanguage);
+  document.querySelectorAll(".".concat(_js_constants_class_names_constants__WEBPACK_IMPORTED_MODULE_3__["default"].BUTTON)).forEach(function (btn) {
+    return btn.addEventListener('mousedown', _js_events_event_listeners__WEBPACK_IMPORTED_MODULE_2__["default"].mouseKeyDown);
+  });
+  document.querySelectorAll(".".concat(_js_constants_class_names_constants__WEBPACK_IMPORTED_MODULE_3__["default"].BUTTON)).forEach(function (btn) {
+    return btn.addEventListener('mouseup', _js_events_event_listeners__WEBPACK_IMPORTED_MODULE_2__["default"].mouseKeyUp);
+  });
+  document.querySelectorAll(".".concat(_js_constants_class_names_constants__WEBPACK_IMPORTED_MODULE_3__["default"].BUTTON)).forEach(function (btn) {
+    return btn.addEventListener('mouseout', _js_events_event_listeners__WEBPACK_IMPORTED_MODULE_2__["default"].mouseKeyOut);
+  });
 };
 
 /***/ }),
@@ -664,12 +249,36 @@ var classNamesConstants = {
   BUTTON: 'button',
   BUTTON_SPECIAL: 'button_special',
   BUTTON_KEY: 'button_key',
+  BUTTON_LANGUAGE: 'button_language',
   SYMBOL: 'symbol',
   SYMBOL_UNSHIFT: 'symbol_unshift',
   SYMBOL_SHIFT: 'symbol_shift',
-  HIDE: 'hide'
+  HIDE: 'hide',
+  KEYBOARD: 'keyboard',
+  BUTTON_CAPSLOCK: 'button_capslock',
+  PRESSED: 'pressed',
+  WRAPPER: 'wrapper',
+  TITLE: 'title',
+  INSTRUCTION: 'instruction',
+  ROW: 'row'
 };
 /* harmony default export */ __webpack_exports__["default"] = (classNamesConstants);
+
+/***/ }),
+
+/***/ "./src/js/constants/id-names-constants.js":
+/*!************************************************!*\
+  !*** ./src/js/constants/id-names-constants.js ***!
+  \************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+var idNamesConstants = {
+  TEXTAREA: 'textarea'
+};
+/* harmony default export */ __webpack_exports__["default"] = (idNamesConstants);
 
 /***/ }),
 
@@ -683,9 +292,67 @@ var classNamesConstants = {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 var keySpecialConstants = {
-  SPACE: 'Space'
+  ALT: 'Alt',
+  BACKSPACE: 'Backspace',
+  CAPSLOCK: 'CapsLock',
+  DELETE: 'Delete',
+  ENTER: 'Enter',
+  SPACE: 'Space',
+  SHIFT: 'Shift',
+  TAB: 'Tab'
 };
 /* harmony default export */ __webpack_exports__["default"] = (keySpecialConstants);
+
+/***/ }),
+
+/***/ "./src/js/constants/keyboard-languages.js":
+/*!************************************************!*\
+  !*** ./src/js/constants/keyboard-languages.js ***!
+  \************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+var nextKeyboardLanguage = {
+  eng: 'ru',
+  ru: 'eng'
+};
+/* harmony default export */ __webpack_exports__["default"] = (nextKeyboardLanguage);
+
+/***/ }),
+
+/***/ "./src/js/constants/localstorage-constants.js":
+/*!****************************************************!*\
+  !*** ./src/js/constants/localstorage-constants.js ***!
+  \****************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+var localStorageConstants = {
+  CAPSLOCKPRESSED: 'capslockPressed',
+  LANGUAGE: 'language'
+};
+/* harmony default export */ __webpack_exports__["default"] = (localStorageConstants);
+
+/***/ }),
+
+/***/ "./src/js/constants/string-constants.js":
+/*!**********************************************!*\
+  !*** ./src/js/constants/string-constants.js ***!
+  \**********************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+var stringConstants = {
+  TITLE: 'Virtual Keyboard (by LVKhomyakova)',
+  INSTRUCTION: 'Сhange language (for Windows): Ctrl + Alt or ENG/RU'
+};
+/* harmony default export */ __webpack_exports__["default"] = (stringConstants);
 
 /***/ }),
 
@@ -1357,6 +1024,322 @@ var data = {
 
 /***/ }),
 
+/***/ "./src/js/events/event-listeners.js":
+/*!******************************************!*\
+  !*** ./src/js/events/event-listeners.js ***!
+  \******************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _constants_localstorage_constants__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../constants/localstorage-constants */ "./src/js/constants/localstorage-constants.js");
+/* harmony import */ var _constants_class_names_constants__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../constants/class-names-constants */ "./src/js/constants/class-names-constants.js");
+/* harmony import */ var _constants_key_special_constants__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../constants/key-special-constants */ "./src/js/constants/key-special-constants.js");
+/* harmony import */ var _constants_id_names_constants__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../constants/id-names-constants */ "./src/js/constants/id-names-constants.js");
+/* harmony import */ var _constants_keyboard_languages__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../constants/keyboard-languages */ "./src/js/constants/keyboard-languages.js");
+/* harmony import */ var _constants_attributes_constants__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../constants/attributes-constants */ "./src/js/constants/attributes-constants.js");
+
+
+
+
+
+
+var eventListeners = {
+  unpressShift: function unpressShift() {
+    document.querySelectorAll(".".concat(_constants_class_names_constants__WEBPACK_IMPORTED_MODULE_1__["default"].SYMBOL_UNSHIFT)).forEach(function (symbol) {
+      symbol.classList.remove(_constants_class_names_constants__WEBPACK_IMPORTED_MODULE_1__["default"].HIDE);
+    });
+    document.querySelectorAll(".".concat(_constants_class_names_constants__WEBPACK_IMPORTED_MODULE_1__["default"].SYMBOL_SHIFT)).forEach(function (symbol) {
+      symbol.classList.add(_constants_class_names_constants__WEBPACK_IMPORTED_MODULE_1__["default"].HIDE);
+    });
+  },
+  pressShift: function pressShift() {
+    document.querySelectorAll(".".concat(_constants_class_names_constants__WEBPACK_IMPORTED_MODULE_1__["default"].SYMBOL_UNSHIFT)).forEach(function (symbol) {
+      symbol.classList.add(_constants_class_names_constants__WEBPACK_IMPORTED_MODULE_1__["default"].HIDE);
+    });
+    document.querySelectorAll(".".concat(_constants_class_names_constants__WEBPACK_IMPORTED_MODULE_1__["default"].SYMBOL_SHIFT)).forEach(function (symbol) {
+      symbol.classList.remove(_constants_class_names_constants__WEBPACK_IMPORTED_MODULE_1__["default"].HIDE);
+    });
+  },
+  changeText: function changeText(e) {
+    var pozitionRemoved = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+    var numberRemoved = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
+    var pastedSymbol = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : '';
+    var deltaPozition = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 0;
+    e.preventDefault();
+    var textarea = document.querySelector("#".concat(_constants_id_names_constants__WEBPACK_IMPORTED_MODULE_3__["default"].TEXTAREA));
+    var pozition = textarea.selectionStart;
+    var text = document.querySelector("#".concat(_constants_id_names_constants__WEBPACK_IMPORTED_MODULE_3__["default"].TEXTAREA)).value.split('');
+    text.splice(textarea.selectionStart + pozitionRemoved, numberRemoved, pastedSymbol);
+    textarea.value = text.join('');
+    pozition += deltaPozition;
+    textarea.selectionStart = pozition;
+    textarea.selectionEnd = pozition;
+  },
+  changeLanguage: function changeLanguage(e) {
+    e.preventDefault();
+    localStorage.setItem(_constants_localstorage_constants__WEBPACK_IMPORTED_MODULE_0__["default"].LANGUAGE, _constants_keyboard_languages__WEBPACK_IMPORTED_MODULE_4__["default"][localStorage.getItem(_constants_localstorage_constants__WEBPACK_IMPORTED_MODULE_0__["default"].LANGUAGE)]);
+    document.querySelector(".".concat(_constants_class_names_constants__WEBPACK_IMPORTED_MODULE_1__["default"].KEYBOARD)).remove();
+    window.onload();
+  },
+  doSpecialKey: function doSpecialKey(e) {
+    switch (e.key) {
+      case _constants_key_special_constants__WEBPACK_IMPORTED_MODULE_2__["default"].BACKSPACE:
+        {
+          eventListeners.changeText(e, -1, 1, '', -1);
+          break;
+        }
+
+      case _constants_key_special_constants__WEBPACK_IMPORTED_MODULE_2__["default"].DELETE:
+        {
+          eventListeners.changeText(e, 0, 1, '', 0);
+          break;
+        }
+
+      case _constants_key_special_constants__WEBPACK_IMPORTED_MODULE_2__["default"].TAB:
+        {
+          eventListeners.changeText(e, 0, 0, '\t', 1);
+          break;
+        }
+
+      case _constants_key_special_constants__WEBPACK_IMPORTED_MODULE_2__["default"].ENTER:
+        {
+          eventListeners.changeText(e, 0, 0, '\n', 1);
+          break;
+        }
+
+      case _constants_key_special_constants__WEBPACK_IMPORTED_MODULE_2__["default"].SHIFT:
+        if (localStorage.getItem(_constants_localstorage_constants__WEBPACK_IMPORTED_MODULE_0__["default"].CAPSLOCKPRESSED) === 'false') {
+          eventListeners.pressShift();
+        } else {
+          eventListeners.unpressShift();
+        }
+
+        break;
+
+      case _constants_key_special_constants__WEBPACK_IMPORTED_MODULE_2__["default"].ALT:
+        e.preventDefault();
+
+        if (e.ctrlKey) {
+          eventListeners.changeLanguage(e);
+        }
+
+        break;
+
+      default:
+        break;
+    }
+  },
+  // button events
+  buttonKeyDown: function buttonKeyDown(e) {
+    var target = document.querySelector(".".concat(_constants_class_names_constants__WEBPACK_IMPORTED_MODULE_1__["default"].BUTTON, "[").concat(_constants_attributes_constants__WEBPACK_IMPORTED_MODULE_5__["default"].DATA_CODE, " = ").concat(e.code, "]"));
+    var key = '';
+
+    if (!target) {
+      return;
+    }
+
+    target.childNodes.forEach(function (ch) {
+      if (!ch.classList.contains(_constants_class_names_constants__WEBPACK_IMPORTED_MODULE_1__["default"].HIDE)) {
+        key = ch.textContent;
+      }
+    });
+
+    if (e.code !== _constants_key_special_constants__WEBPACK_IMPORTED_MODULE_2__["default"].CAPSLOCK) {
+      target.classList.add(_constants_class_names_constants__WEBPACK_IMPORTED_MODULE_1__["default"].PRESSED);
+    }
+
+    var textarea = document.querySelector("#".concat(_constants_id_names_constants__WEBPACK_IMPORTED_MODULE_3__["default"].TEXTAREA));
+
+    if (!target.classList.contains(_constants_class_names_constants__WEBPACK_IMPORTED_MODULE_1__["default"].BUTTON_SPECIAL)) {
+      textarea.blur();
+      eventListeners.changeText(e, 0, 0, key, 1);
+    } else {
+      eventListeners.doSpecialKey(e);
+    }
+  },
+  buttonKeyUp: function buttonKeyUp(e) {
+    var target = document.querySelector(".".concat(_constants_class_names_constants__WEBPACK_IMPORTED_MODULE_1__["default"].BUTTON, "[").concat(_constants_attributes_constants__WEBPACK_IMPORTED_MODULE_5__["default"].DATA_CODE, " = ").concat(e.code, "]"));
+
+    if (!target) {
+      return;
+    }
+
+    if (e.code !== _constants_key_special_constants__WEBPACK_IMPORTED_MODULE_2__["default"].CAPSLOCK) {
+      target.classList.remove(_constants_class_names_constants__WEBPACK_IMPORTED_MODULE_1__["default"].PRESSED);
+    }
+
+    if (target.classList.contains(_constants_class_names_constants__WEBPACK_IMPORTED_MODULE_1__["default"].BUTTON_SPECIAL)) {
+      switch (e.key) {
+        case _constants_key_special_constants__WEBPACK_IMPORTED_MODULE_2__["default"].SHIFT:
+          if (localStorage.getItem(_constants_localstorage_constants__WEBPACK_IMPORTED_MODULE_0__["default"].CAPSLOCKPRESSED) === 'true') {
+            eventListeners.pressShift();
+          } else {
+            eventListeners.unpressShift();
+          }
+
+          break;
+
+        case _constants_key_special_constants__WEBPACK_IMPORTED_MODULE_2__["default"].CAPSLOCK:
+          if (localStorage.getItem(_constants_localstorage_constants__WEBPACK_IMPORTED_MODULE_0__["default"].CAPSLOCKPRESSED) === 'false') {
+            eventListeners.pressShift();
+            localStorage.setItem(_constants_localstorage_constants__WEBPACK_IMPORTED_MODULE_0__["default"].CAPSLOCKPRESSED, 'true');
+          } else {
+            eventListeners.unpressShift();
+            localStorage.setItem(_constants_localstorage_constants__WEBPACK_IMPORTED_MODULE_0__["default"].CAPSLOCKPRESSED, 'false');
+          }
+
+          document.querySelector(".".concat(_constants_class_names_constants__WEBPACK_IMPORTED_MODULE_1__["default"].BUTTON_CAPSLOCK)).classList.toggle(_constants_class_names_constants__WEBPACK_IMPORTED_MODULE_1__["default"].PRESSED);
+          break;
+
+        default:
+          break;
+      }
+    }
+  },
+  // mouse events..
+  mouseKeyUp: function mouseKeyUp(e) {
+    e.preventDefault();
+    var target = e.currentTarget;
+    var key = '';
+
+    if (!target) {
+      return;
+    }
+
+    target.childNodes.forEach(function (ch) {
+      if (!ch.classList.contains(_constants_class_names_constants__WEBPACK_IMPORTED_MODULE_1__["default"].HIDE)) {
+        key = ch.textContent;
+      }
+    });
+
+    if (target.getAttribute(_constants_attributes_constants__WEBPACK_IMPORTED_MODULE_5__["default"].DATA_CODE) !== _constants_key_special_constants__WEBPACK_IMPORTED_MODULE_2__["default"].CAPSLOCK) {
+      target.classList.remove(_constants_class_names_constants__WEBPACK_IMPORTED_MODULE_1__["default"].PRESSED);
+    }
+
+    if (target.classList.contains(_constants_class_names_constants__WEBPACK_IMPORTED_MODULE_1__["default"].BUTTON_SPECIAL)) {
+      switch (key) {
+        case _constants_key_special_constants__WEBPACK_IMPORTED_MODULE_2__["default"].SHIFT:
+          if (localStorage.getItem(_constants_localstorage_constants__WEBPACK_IMPORTED_MODULE_0__["default"].CAPSLOCKPRESSED) !== 'false') {
+            eventListeners.pressShift();
+          } else {
+            eventListeners.unpressShift();
+          }
+
+          break;
+
+        case _constants_key_special_constants__WEBPACK_IMPORTED_MODULE_2__["default"].CAPSLOCK:
+          if (localStorage.getItem(_constants_localstorage_constants__WEBPACK_IMPORTED_MODULE_0__["default"].CAPSLOCKPRESSED) === 'false') {
+            eventListeners.pressShift();
+            localStorage.setItem(_constants_localstorage_constants__WEBPACK_IMPORTED_MODULE_0__["default"].CAPSLOCKPRESSED, 'true');
+          } else {
+            eventListeners.unpressShift();
+            localStorage.setItem(_constants_localstorage_constants__WEBPACK_IMPORTED_MODULE_0__["default"].CAPSLOCKPRESSED, 'false');
+          }
+
+          break;
+
+        default:
+          break;
+      }
+    }
+  },
+  mouseKeyOut: function mouseKeyOut(e) {
+    var target = e.currentTarget;
+
+    if (!target) {
+      return;
+    }
+
+    if (target.getAttribute(_constants_attributes_constants__WEBPACK_IMPORTED_MODULE_5__["default"].DATA_CODE) !== _constants_key_special_constants__WEBPACK_IMPORTED_MODULE_2__["default"].CAPSLOCK) {
+      target.classList.remove(_constants_class_names_constants__WEBPACK_IMPORTED_MODULE_1__["default"].PRESSED);
+    }
+  },
+  mouseKeyDown: function mouseKeyDown(e) {
+    e.preventDefault();
+    var target = e.currentTarget;
+    var key = '';
+
+    if (!target) {
+      return;
+    }
+
+    target.childNodes.forEach(function (ch) {
+      if (!ch.classList.contains(_constants_class_names_constants__WEBPACK_IMPORTED_MODULE_1__["default"].HIDE)) {
+        key = ch.textContent;
+      }
+    });
+
+    if (target.getAttribute(_constants_attributes_constants__WEBPACK_IMPORTED_MODULE_5__["default"].DATA_CODE) !== _constants_key_special_constants__WEBPACK_IMPORTED_MODULE_2__["default"].CAPSLOCK) {
+      target.classList.add(_constants_class_names_constants__WEBPACK_IMPORTED_MODULE_1__["default"].PRESSED);
+    } else {
+      target.classList.toggle(_constants_class_names_constants__WEBPACK_IMPORTED_MODULE_1__["default"].PRESSED);
+    }
+
+    if (!target.classList.contains(_constants_class_names_constants__WEBPACK_IMPORTED_MODULE_1__["default"].BUTTON_SPECIAL)) {
+      eventListeners.changeText(e, 0, 0, key, 1);
+    } else {
+      switch (key) {
+        case _constants_key_special_constants__WEBPACK_IMPORTED_MODULE_2__["default"].BACKSPACE:
+          {
+            eventListeners.changeText(e, -1, 1, '', -1);
+            break;
+          }
+
+        case _constants_key_special_constants__WEBPACK_IMPORTED_MODULE_2__["default"].TAB:
+          {
+            eventListeners.changeText(e, 0, 0, '\t', 1);
+            break;
+          }
+
+        case _constants_key_special_constants__WEBPACK_IMPORTED_MODULE_2__["default"].DELETE:
+          {
+            eventListeners.changeText(e, 0, 1, '', 0);
+            break;
+          }
+
+        case _constants_key_special_constants__WEBPACK_IMPORTED_MODULE_2__["default"].ENTER:
+          {
+            eventListeners.changeText(e, 0, 0, '\n', 1);
+            break;
+          }
+
+        case _constants_key_special_constants__WEBPACK_IMPORTED_MODULE_2__["default"].SHIFT:
+          if (localStorage.getItem(_constants_localstorage_constants__WEBPACK_IMPORTED_MODULE_0__["default"].CAPSLOCKPRESSED) === 'false') {
+            eventListeners.pressShift();
+          } else {
+            eventListeners.unpressShift();
+          }
+
+          break;
+
+        case _constants_key_special_constants__WEBPACK_IMPORTED_MODULE_2__["default"].ALT:
+          if (e.shiftKey) {
+            eventListeners.changeLanguage(e);
+            document.querySelectorAll(".".concat(_constants_class_names_constants__WEBPACK_IMPORTED_MODULE_1__["default"].BUTTON)).forEach(function (btn) {
+              return btn.addEventListener('mousedown', eventListeners.mouseKeyDown);
+            });
+            document.querySelectorAll(".".concat(_constants_class_names_constants__WEBPACK_IMPORTED_MODULE_1__["default"].BUTTON)).forEach(function (btn) {
+              return btn.addEventListener('mouseup', eventListeners.mouseKeyUp);
+            });
+            document.querySelectorAll(".".concat(_constants_class_names_constants__WEBPACK_IMPORTED_MODULE_1__["default"].BUTTON)).forEach(function (btn) {
+              return btn.addEventListener('mouseout', eventListeners.mouseKeyOut);
+            });
+          }
+
+          break;
+
+        default:
+          break;
+      }
+    }
+  }
+};
+/* harmony default export */ __webpack_exports__["default"] = (eventListeners);
+
+/***/ }),
+
 /***/ "./src/js/helpers/utils.js":
 /*!*********************************!*\
   !*** ./src/js/helpers/utils.js ***!
@@ -1379,6 +1362,103 @@ function createDOMElement(type) {
   });
   return elem;
 }
+
+/***/ }),
+
+/***/ "./src/js/keyboard/keyboard-elements.js":
+/*!**********************************************!*\
+  !*** ./src/js/keyboard/keyboard-elements.js ***!
+  \**********************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _helpers_utils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../helpers/utils */ "./src/js/helpers/utils.js");
+/* harmony import */ var _constants_attributes_constants__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../constants/attributes-constants */ "./src/js/constants/attributes-constants.js");
+/* harmony import */ var _constants_localstorage_constants__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../constants/localstorage-constants */ "./src/js/constants/localstorage-constants.js");
+/* harmony import */ var _constants_id_names_constants__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../constants/id-names-constants */ "./src/js/constants/id-names-constants.js");
+/* harmony import */ var _constants_class_names_constants__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../constants/class-names-constants */ "./src/js/constants/class-names-constants.js");
+/* harmony import */ var _constants_string_constants__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../constants/string-constants */ "./src/js/constants/string-constants.js");
+/* harmony import */ var _components_Key__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../components/Key */ "./src/js/components/Key.js");
+/* harmony import */ var _data_Data__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../data/Data */ "./src/js/data/Data.js");
+
+
+
+
+
+
+
+
+var keyboardElements = {
+  renderWrapper: function renderWrapper() {
+    return Object(_helpers_utils__WEBPACK_IMPORTED_MODULE_0__["default"])('div', [{
+      name: 'className',
+      value: _constants_class_names_constants__WEBPACK_IMPORTED_MODULE_4__["default"].WRAPPER
+    }]);
+  },
+  renderTitle: function renderTitle() {
+    return Object(_helpers_utils__WEBPACK_IMPORTED_MODULE_0__["default"])('h1', [{
+      name: 'className',
+      value: _constants_class_names_constants__WEBPACK_IMPORTED_MODULE_4__["default"].TITLE
+    }, {
+      name: 'innerHTML',
+      value: _constants_string_constants__WEBPACK_IMPORTED_MODULE_5__["default"].TITLE
+    }]);
+  },
+  renderTextarea: function renderTextarea() {
+    return Object(_helpers_utils__WEBPACK_IMPORTED_MODULE_0__["default"])('textarea', [{
+      name: 'id',
+      value: _constants_id_names_constants__WEBPACK_IMPORTED_MODULE_3__["default"].TEXTAREA
+    }], [{
+      name: _constants_attributes_constants__WEBPACK_IMPORTED_MODULE_1__["default"].ROWS,
+      value: '15'
+    }]);
+  },
+  renderInstruction: function renderInstruction() {
+    return Object(_helpers_utils__WEBPACK_IMPORTED_MODULE_0__["default"])('h2', [{
+      name: 'className',
+      value: _constants_class_names_constants__WEBPACK_IMPORTED_MODULE_4__["default"].INSTRUCTION
+    }, {
+      name: 'innerHTML',
+      value: _constants_string_constants__WEBPACK_IMPORTED_MODULE_5__["default"].INSTRUCTION
+    }]);
+  },
+  // Keyboard render
+  renderRows: function renderRows(dataKeyboard) {
+    if (!localStorage.getItem(_constants_localstorage_constants__WEBPACK_IMPORTED_MODULE_2__["default"].LANGUAGE)) {
+      localStorage.setItem(_constants_localstorage_constants__WEBPACK_IMPORTED_MODULE_2__["default"].LANGUAGE, 'eng');
+    }
+
+    var dataKeys = dataKeyboard[localStorage.getItem(_constants_localstorage_constants__WEBPACK_IMPORTED_MODULE_2__["default"].LANGUAGE)];
+    var rows = [];
+    dataKeys.forEach(function (dataRow) {
+      var row = Object(_helpers_utils__WEBPACK_IMPORTED_MODULE_0__["default"])('section', [{
+        name: 'className',
+        value: _constants_class_names_constants__WEBPACK_IMPORTED_MODULE_4__["default"].ROW
+      }]);
+      dataRow.forEach(function (dataKey) {
+        var key = new _components_Key__WEBPACK_IMPORTED_MODULE_6__["default"](dataKey);
+        var button = key.generateKey();
+        row.append(button);
+      });
+      rows.push(row);
+    });
+    return rows;
+  },
+  renderKeyBoard: function renderKeyBoard() {
+    var keyboard = Object(_helpers_utils__WEBPACK_IMPORTED_MODULE_0__["default"])('section', [{
+      name: 'className',
+      value: _constants_class_names_constants__WEBPACK_IMPORTED_MODULE_4__["default"].KEYBOARD
+    }]);
+    var rows = keyboardElements.renderRows(_data_Data__WEBPACK_IMPORTED_MODULE_7__["default"]);
+    rows.forEach(function (row) {
+      keyboard.append(row);
+    });
+    return keyboard;
+  }
+};
+/* harmony default export */ __webpack_exports__["default"] = (keyboardElements);
 
 /***/ }),
 
