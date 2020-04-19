@@ -1,4 +1,3 @@
-
 class Key {
   constructor({
     code, key, keyShift, keySpecial,

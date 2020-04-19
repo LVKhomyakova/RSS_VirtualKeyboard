@@ -95,8 +95,8 @@
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _js_Data__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./js/Data */ "./src/js/Data.js");
-/* harmony import */ var _js_Key__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./js/Key */ "./src/js/Key.js");
+/* harmony import */ var _js_data_Data__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./js/data/Data */ "./src/js/data/Data.js");
+/* harmony import */ var _js_components_Key__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./js/components/Key */ "./src/js/components/Key.js");
 
 
 
@@ -146,7 +146,7 @@ var renderRows = function renderRows(dataKeyboard) {
     var row = document.createElement('section');
     row.className = 'row';
     dataRow.forEach(function (dataKey) {
-      var key = new _js_Key__WEBPACK_IMPORTED_MODULE_1__["default"](dataKey);
+      var key = new _js_components_Key__WEBPACK_IMPORTED_MODULE_1__["default"](dataKey);
       var button = key.generateKey();
       row.append(button);
     });
@@ -158,7 +158,7 @@ var renderRows = function renderRows(dataKeyboard) {
 var renderKeyBoard = function renderKeyBoard() {
   var keyboard = document.createElement('section');
   keyboard.className = 'keyboard';
-  var rows = renderRows(_js_Data__WEBPACK_IMPORTED_MODULE_0__["default"]);
+  var rows = renderRows(_js_data_Data__WEBPACK_IMPORTED_MODULE_0__["default"]);
   rows.forEach(function (row) {
     keyboard.append(row);
   });
@@ -445,7 +445,11 @@ var doSpecialKey = function doSpecialKey(e) {
 var buttonKeyDown = function buttonKeyDown(e) {
   var target = document.querySelector(".button[data-code = ".concat(e.code, "]"));
   var key = '';
-  if (!target) return;
+
+  if (!target) {
+    return;
+  }
+
   target.childNodes.forEach(function (ch) {
     if (!ch.classList.contains('hide')) {
       key = ch.textContent;
@@ -475,7 +479,11 @@ var buttonKeyDown = function buttonKeyDown(e) {
 
 var buttonKeyUp = function buttonKeyUp(e) {
   var target = document.querySelector(".button[data-code = ".concat(e.code, "]"));
-  if (!target) return;
+
+  if (!target) {
+    return;
+  }
+
   if (e.code !== 'CapsLock') target.classList.remove('pressed');
 
   if (target.classList.contains('button_special')) {
@@ -538,7 +546,7 @@ window.onload = function () {
 
   var wrapper = document.querySelector('.wrapper');
 
-  if (_js_Data__WEBPACK_IMPORTED_MODULE_0__["default"]) {
+  if (_js_data_Data__WEBPACK_IMPORTED_MODULE_0__["default"]) {
     wrapper.append(renderKeyBoard());
   } // add listeners
 
@@ -551,10 +559,70 @@ window.onload = function () {
 
 /***/ }),
 
-/***/ "./src/js/Data.js":
-/*!************************!*\
-  !*** ./src/js/Data.js ***!
-  \************************/
+/***/ "./src/js/components/Key.js":
+/*!**********************************!*\
+  !*** ./src/js/components/Key.js ***!
+  \**********************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return Key; });
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+var Key = /*#__PURE__*/function () {
+  function Key(_ref) {
+    var code = _ref.code,
+        key = _ref.key,
+        keyShift = _ref.keyShift,
+        keySpecial = _ref.keySpecial;
+
+    _classCallCheck(this, Key);
+
+    this.code = code;
+    this.key = key;
+    this.keyShift = keyShift;
+    this.keySpecial = keySpecial;
+  }
+
+  _createClass(Key, [{
+    key: "generateKey",
+    value: function generateKey() {
+      var template = '';
+      var button = document.createElement('div');
+      button.className = 'button';
+      button.setAttribute('data-code', this.code);
+
+      if (this.keySpecial) {
+        button.classList.add("button_".concat(this.keySpecial.toLowerCase()), 'button_special');
+      } else {
+        button.classList.add('button_key');
+      }
+
+      if (this.keySpecial === 'Space') button.classList.remove('button_special');
+      template += "<span class=\"symbol symbol_unshift\">".concat(this.key, "</span>");
+      template += "<span class=\"symbol symbol_shift hide\">".concat(this.keyShift, "</span>");
+      button.innerHTML = template;
+      return button;
+    }
+  }]);
+
+  return Key;
+}();
+
+
+
+/***/ }),
+
+/***/ "./src/js/data/Data.js":
+/*!*****************************!*\
+  !*** ./src/js/data/Data.js ***!
+  \*****************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -1215,66 +1283,6 @@ var data = {
     keySpecial: ''
   }]]
 };
-
-
-/***/ }),
-
-/***/ "./src/js/Key.js":
-/*!***********************!*\
-  !*** ./src/js/Key.js ***!
-  \***********************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return Key; });
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
-
-var Key = /*#__PURE__*/function () {
-  function Key(_ref) {
-    var code = _ref.code,
-        key = _ref.key,
-        keyShift = _ref.keyShift,
-        keySpecial = _ref.keySpecial;
-
-    _classCallCheck(this, Key);
-
-    this.code = code;
-    this.key = key;
-    this.keyShift = keyShift;
-    this.keySpecial = keySpecial;
-  }
-
-  _createClass(Key, [{
-    key: "generateKey",
-    value: function generateKey() {
-      var template = '';
-      var button = document.createElement('div');
-      button.className = 'button';
-      button.setAttribute('data-code', this.code);
-
-      if (this.keySpecial) {
-        button.classList.add("button_".concat(this.keySpecial.toLowerCase()), 'button_special');
-      } else {
-        button.classList.add('button_key');
-      }
-
-      if (this.keySpecial === 'Space') button.classList.remove('button_special');
-      template += "<span class=\"symbol symbol_unshift\">".concat(this.key, "</span>");
-      template += "<span class=\"symbol symbol_shift hide\">".concat(this.keyShift, "</span>");
-      button.innerHTML = template;
-      return button;
-    }
-  }]);
-
-  return Key;
-}();
-
 
 
 /***/ }),
